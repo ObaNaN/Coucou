@@ -1,0 +1,134 @@
+﻿<html>
+
+	<head>
+	<title>TEST</title>
+	<link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.4/jquery.mobile-1.4.4.css" />
+	
+	<meta content = "width=device-width, minimun-scale=1, maximun-scale=1" name ="viewport">
+	<script src = "jquery-1.11.1.min.js"></script>
+	<script src = "jquery.mobile-1.4.4/jquery.mobile-1.4.4.js"></script>
+	</head>
+
+
+	<body>
+
+	
+	
+
+		
+		
+		
+		<div data-role="collapsible-set" data-theme="c" data-content-theme="d">
+			<div data-role="collapsible">
+				<h3>Géolocalistion</h3>
+				<p><div id="infoposition"></div></p>
+			</div>
+				<div data-role="collapsible">
+					<h3>Orientation du device</h3>
+					<p>  
+					<div class="main">
+							<h2>Device Orientation</h2>
+						<table>
+							<tr>
+							  <td>Event Supported</td>
+							  <td id="doEvent"></td>
+							</tr>
+							<tr>
+							  <td>Tilt Left/Right [gamma]</td>
+							  <td id="doTiltLR"></td>
+							</tr>
+							<tr>
+							  <td>Tilt Front/Back [beta]</td>
+							  <td id="doTiltFB"></td>
+							</tr>
+							<tr>
+							  <td>Direction [alpha]</td>
+							  <td id="doDirection"></td>
+							</tr>
+						</table>
+					</div>
+		  
+					<div class="container" style="-webkit-perspective: 300; perspective: 300;">
+						<img src="html5_logo.png" id="imgLogo" class="logo">
+					</div></p>
+				</div>
+			
+			</div>
+			
+	</body>
+
+	
+	
+
+   <!-- script pour l'image -->
+  <script type="text/javascript">
+    init();
+    var count = 0;
+    
+    function init() {
+      if (window.DeviceOrientationEvent) {
+        document.getElementById("doEvent").innerHTML = "DeviceOrientation";
+        // Listen for the deviceorientation event and handle the raw data
+        window.addEventListener('deviceorientation', function(eventData) {
+          // gamma is the left-to-right tilt in degrees, where right is positive
+          var tiltLR = eventData.gamma;
+          
+          // beta is the front-to-back tilt in degrees, where front is positive
+          var tiltFB = eventData.beta;
+          
+          // alpha is the compass direction the device is facing in degrees
+          var dir = eventData.alpha
+          
+          // call our orientation event handler
+          deviceOrientationHandler(tiltLR, tiltFB, dir);
+          }, false);
+      } else {
+        document.getElementById("doEvent").innerHTML = "Not supported on your device or browser.  Sorry."
+      }
+    }
+  
+    function deviceOrientationHandler(tiltLR, tiltFB, dir) {
+      document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
+      document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+      document.getElementById("doDirection").innerHTML = Math.round(dir);
+      
+      // Apply the transform to the image
+      var logo = document.getElementById("imgLogo");
+      logo.style.webkitTransform = "rotate("+ tiltLR +"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+      logo.style.MozTransform = "rotate("+ tiltLR +"deg)";
+      logo.style.transform = "rotate("+ tiltLR +"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+    }
+    
+    
+    // Some other fun rotations to try...
+    //var rotation = "rotate3d(0,1,0, "+ (tiltLR*-1)+"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+    //var rotation = "rotate("+ tiltLR +"deg) rotate3d(0,1,0, "+ (tiltLR*-1)+"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+  </script>
+	
+	
+	
+	
+	<!-- script pour la geolocalisation -->
+	<script>
+
+		if
+		(navigator.geolocation)
+		{
+		 console.log ("Geolocation is supported " );
+		}
+
+		navigator.geolocation.getCurrentPosition
+		(
+		function (position) {
+			var infopos = "Position déterminée : \n";
+			infopos += "Latitude : "+ position.coords.latitude +"\n";
+			infopos += "Longitude: "+ position.coords.longitude +"\n";
+			infopos += "Altitude : "+ position.coords.altitude +"\n";
+			document.getElementById ("infoposition").innerHTML = infopos;
+		});
+		</script>
+		
+	
+	
+	
+</html>
